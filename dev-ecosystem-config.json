@@ -4,7 +4,8 @@
         "name": "team-alpha-dev",
         "script": "npm run start:staging",
         "log_file": "~/.pm2/logs/team-alpha-dev-out.log",
-        "combine_logs": true
+        "combine_logs": true,
+        "log_date_format": "YYYY-MM-DD HH:mm:ss Z"
       }
     ]
   }
