@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI/CD--Main
 
 on:
   pull_request:
@@ -63,6 +63,6 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-           echo "hello"
-           export PATH=$PATH:/home/teamalpha/.nvm/versions/node/v20.15.1/bin
-           bash ~/main-deployment.sh
+            echo "hello"
+            export PATH=$PATH:/home/teamalpha/.nvm/versions/node/v20.15.1/bin
+            bash ~/main-deployment.sh
