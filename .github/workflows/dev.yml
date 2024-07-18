@@ -63,4 +63,5 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
            echo "hello"
+           export PATH=$PATH:/home/teamalpha/.nvm/versions/node/v20.15.1/bin/pm2
            bash ~/deployment.sh
