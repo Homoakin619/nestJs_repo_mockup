@@ -25,7 +25,7 @@ export default class RegistrationController {
           message: USER_ACCOUNT_EXIST
         })
       }
-      console.log("Logging from registration controller")
+
       await this.userService.createUser(registrationPayload);
 
       const user = await this.userService.getUserRecord({ identifier: registrationPayload.email, identifierType: "email" })
