@@ -37,11 +37,11 @@ import databaseConfig from '../config/database/typeorm';
       /**
        * See ".env.local" file to list all environment variables needed by the app
        */
-      validationSchema: Joi.object({
-        NODE_ENV: Joi.string().valid('development', 'production', 'test', 'provision').required(),
-        PROFILE: Joi.string().valid('local', 'development', 'production', 'ci', 'testing', 'staging').required(),
-        PORT: Joi.number().required(),
-      }),
+      // validationSchema: Joi.object({
+      //   NODE_ENV: Joi.string().valid('development', 'production', 'test', 'provision').required(),
+      //   PROFILE: Joi.string().valid('local', 'development', 'production', 'ci', 'testing', 'staging').required(),
+      //   PORT: Joi.number().required(),
+      // }),
     }),
     LoggerModule.forRoot(),
 
