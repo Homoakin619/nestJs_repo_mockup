@@ -3,6 +3,7 @@
       {
         "name": "team-alpha-prod",
         "script": "npm run start:prod",
+        "script": "npm run start",
         "log_file": "~/.pm2/logs/team-alpha-prod-out.log",
         "combine_logs": true,
         "log_date_format": "YYYY-MM-DD HH:mm:ss Z"
