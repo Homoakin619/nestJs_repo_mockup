@@ -53,8 +53,14 @@ jobs:
       - name: Run tests
         run: npm run test
 
-      - name: Deploy to server
-        run: |
-          # Add your deployment commands here
-          # For example, you can use scp to copy files to a server or use a deployment tool
-          echo "Deploying to server..."
+      - name: Deploying to virtual machine
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          # key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+           echo "hello"
+           bash ~/deployment.sh
