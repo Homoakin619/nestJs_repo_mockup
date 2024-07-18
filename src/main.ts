@@ -1,10 +1,14 @@
 import { NestFactory } from '@nestjs/core';
+import * as dotenv from 'dotenv'
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import '../config/database/typeorm';
+
+dotenv.config()
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { bufferLogs: true });
 
