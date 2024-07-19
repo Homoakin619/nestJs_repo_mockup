@@ -1,4 +1,4 @@
-name: CI/CD--Main
+name: CI/CD--Staging
 
 on:
   pull_request:
