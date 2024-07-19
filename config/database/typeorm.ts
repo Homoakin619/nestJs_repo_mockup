@@ -5,9 +5,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-
-
-const config = {
+const databaseConnectionObject = {
   type: 'postgres',
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -19,6 +17,10 @@ const config = {
   synchronize: false,
   retryAttempts: 3,
   retryDelay: 3000,
+}
+
+const config = {
+  ...databaseConnectionObject,
   cli: {
     migrationsDir: 'src/migrations',
   },
@@ -26,19 +28,10 @@ const config = {
 
 export default registerAs(
   'typeorm',
-  (): TypeOrmModuleOptions => ({
-    type: 'postgres',
-    host: process.env.DB_HOST,
-    port: +process.env.DB_PORT,
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    entities: ['src/**/*.entity{.ts,.js}'],
-    migrations: ['src/migrations/*{.ts,.js}'],
-    synchronize: false,
-    retryAttempts: 3,
-    retryDelay: 3000,
-    namingStrategy: new SnakeNamingStrategy()
+  () => ({
+    ...databaseConnectionObject,
+    namingStrategy: new SnakeNamingStrategy(),
+
   })
 );
 
