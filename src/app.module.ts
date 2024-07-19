@@ -6,7 +6,11 @@ import * as Joi from 'joi';
 import { LoggerModule } from 'nestjs-pino';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './UserManagement/user.module';
-import databaseConfig from '../config/database/typeorm';
+// import databaseConfig from '../config/database/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import * as dotenv from 'dotenv'
+dotenv.config()
+
 
 @Module({
   providers: [
@@ -37,15 +41,37 @@ import databaseConfig from '../config/database/typeorm';
       /**
        * See ".env.local" file to list all environment variables needed by the app
        */
-      // validationSchema: Joi.object({
-      //   NODE_ENV: Joi.string().valid('development', 'production', 'test', 'provision').required(),
-      //   PROFILE: Joi.string().valid('local', 'development', 'production', 'ci', 'testing', 'staging').required(),
-      //   PORT: Joi.number().required(),
-      // }),
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string().valid('development', 'production', 'test', 'provision').required(),
+        PROFILE: Joi.string().valid('local', 'development', 'production', 'ci', 'testing', 'staging').required(),
+        PORT: Joi.number().required(),
+        DB_USER: Joi.string().required(),
+        DB_PASSWORD: Joi.string().required(),
+        DB_NAME: Joi.string().required(),
+        DB_HOST: Joi.string().required(),
+        DB_PORT: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRY: Joi.string().required(),
+      }),
     }),
     LoggerModule.forRoot(),
 
-    TypeOrmModule.forRoot(databaseConfig()),
+    TypeOrmModule.forRoot(
+      {
+        type: 'postgres',
+        host: process.env.DB_HOST,
+        port: +process.env.DB_PORT,
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        entities: [__dirname + 'src/**/*.entity{.ts,.js}'],
+        migrations: [__dirname + 'src/**/migrations/*{.ts,.js}'],
+        synchronize: true,
+        retryAttempts: 5,
+        retryDelay: 3000,
+        namingStrategy: new SnakeNamingStrategy()
+      }
+    ),
     UserModule,
   ],
 })
