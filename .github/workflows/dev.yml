@@ -16,7 +16,9 @@ env:
   DB_ENTITIES: ${{ secrets.DB_ENTITIES }}
   DB_MIGRATIONS: ${{ secrets.DB_MIGRATIONS }}
   DB_TYPE: "postgres"
-  # DB_SSL: "true"
+  PROFILE: "staging"
+  NODE_ENV: "development"
+  PORT: 3000
 
 jobs:
   test-and-build-dev:
