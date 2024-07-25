@@ -51,26 +51,34 @@ jobs:
 
       - name: Start application
         run: |
-          npm run start:prod
+          npm start:prod > app.log 2> &
+          echo $! > app.pid
+          sleep 10
+        continue-on-error: true
 
-      # - name: Check application logs and exit status
-      #   run: |
-      #     kill -0 $(cat app.pid) 2>/dev/null
-      #     if [ $? -eq 0 ]; then
-      #       echo "Application is running successfully."
-      #     else
-      #       echo "Application failed to start."
-      #       cat app.log
-      #       exit 1
-      #     fi
+      - name: Check application logs and exit status
+        run: |
+          kill -0 $(cat app.pid) 2>/dev/null
+          if [ $? -eq 0 ]; then
+            echo "Application is running successfully."
+          else
+            echo "Application failed to start."
+            cat app.log
+            exit 1
+          fi
 
       - name: Stop the application
-        run: kill $(jobs -p)
+        run: |
+          kill $(cat app.pid)
         if: always()
 
-      - name: Start application
-        run: npm run migration:revert
-        if: always()
+      # - name: Stop the application
+      #   run: kill $(jobs -p)
+      #   if: always()
+
+      # - name: Revert application
+      #   run: npm run migration:revert
+      #   if: always()
 
   # deploy-push:
   #   runs-on: ubuntu-latest
