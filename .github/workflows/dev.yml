@@ -10,7 +10,7 @@ on:
 env:
   DB_USERNAME: ${{ secrets.DB_USERNAME }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  DB_DATABASE: 'secrets.DB_DATABASE'
+  DB_DATABASE: ${{ secrets.DB_DATABASE }}
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_PORT: ${{ secrets.DB_PORT }}
   DB_ENTITIES: ${{ secrets.DB_ENTITIES }}
@@ -40,6 +40,22 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Run tests
+        run: npm run test
+
+      - name: Generate migrations
+        run: npm run migration:generate
+
+      - name: Run migrations
+        run: npm run migration:run
+
+      - name: Start application
+        run: npm run start:prod
+        timeout-minutes: 1
+
+      - name: Revert Migrations
+        run: npm run migration:revert
+        if: always()
       # - name: Run tests
       #   run: npm run test
 
@@ -49,9 +65,8 @@ jobs:
       # - name: Run migrations
       #   run: npm run migration:run
 
-      - name: Start application
-        run: npm run start:prod
-        timeout-minutes: 1
+      # - name: Start application
+      #   run: npm run start:prod
 
       # - name: Check application logs and exit status
       #   run: |
