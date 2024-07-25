@@ -50,8 +50,8 @@ jobs:
       #   run: npm run migration:run
 
       - name: Start application
-        run: |
-          npm run start:prod &
+        run: npm run start:prod
+        timeout-minutes: 1
 
       # - name: Check application logs and exit status
       #   run: |
@@ -68,9 +68,9 @@ jobs:
       #   run: kill $(jobs -p)
       #   if: always()
 
-      - name: Start application
-        run: npm run migration:revert
-        if: always()
+      # - name: Start application
+      #   run: npm run migration:revert
+      #   if: always()
 
   # deploy-push:
   #   runs-on: ubuntu-latest
