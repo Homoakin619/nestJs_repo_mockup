@@ -51,7 +51,7 @@ jobs:
 
       - name: Start application
         run: |
-          npm start:prod > app.log 2> &
+          npm start:prod &> app.log &
           echo $! > app.pid
           sleep 10
         continue-on-error: true
