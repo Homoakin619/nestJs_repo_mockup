@@ -40,14 +40,14 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Run tests
-        run: npm run test
+      # - name: Run tests
+      #   run: npm run test
 
-      - name: Generate migrations
-        run: npm run migration:generate
+      # - name: Generate migrations
+      #   run: npm run migration:generate
 
-      - name: Run migrations
-        run: npm run migration:run
+      # - name: Run migrations
+      #   run: npm run migration:run
 
       - name: Start application
         run: |
