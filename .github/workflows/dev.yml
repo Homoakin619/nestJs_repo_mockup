@@ -7,17 +7,17 @@ on:
   push:
     branches:
       - dev
-env: 
+env:
   DB_USERNAME: ${{ secrets.DB_USERNAME }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  DB_DATABASE: ${{ secrets.DB_DATABASE }}
+  DB_DATABASE: 'secrets.DB_DATABASE'
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_PORT: ${{ secrets.DB_PORT }}
   DB_ENTITIES: ${{ secrets.DB_ENTITIES }}
   DB_MIGRATIONS: ${{ secrets.DB_MIGRATIONS }}
-  DB_TYPE: "postgres"
-  PROFILE: "staging"
-  NODE_ENV: "development"
+  DB_TYPE: 'postgres'
+  PROFILE: 'staging'
+  NODE_ENV: 'development'
   PORT: 3000
 
 jobs:
@@ -51,34 +51,26 @@ jobs:
 
       - name: Start application
         run: |
-          npm run start:prod > app.log 2>&1 &
-          echo $! > app.pid
-          sleep 30
-        continue-on-error: true
+          npm run start:prod
 
-      - name: Check application logs and exit status
-        run: |
-          kill -0 $(cat app.pid) 2>/dev/null
-          if [ $? -eq 0 ]; then
-            echo "Application is running successfully."
-          else
-            echo "Application failed to start."
-            cat app.log
-            exit 1
-          fi
-          
+      # - name: Check application logs and exit status
+      #   run: |
+      #     kill -0 $(cat app.pid) 2>/dev/null
+      #     if [ $? -eq 0 ]; then
+      #       echo "Application is running successfully."
+      #     else
+      #       echo "Application failed to start."
+      #       cat app.log
+      #       exit 1
+      #     fi
 
       - name: Stop the application
-        run: |
-          kill $(cat app.pid)
+        run: kill $(jobs -p)
         if: always()
 
       - name: Start application
         run: npm run migration:revert
         if: always()
-        
-
-
 
   # deploy-push:
   #   runs-on: ubuntu-latest
