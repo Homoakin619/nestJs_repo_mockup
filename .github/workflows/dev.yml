@@ -50,7 +50,14 @@ jobs:
         run: npm run migration:run
 
       - name: Start application
-        run: npm run start:prod
+        run: |
+          npm run start:prod &
+          sleep 20 
+          if ! curl -sSf http://localhost:3000 > /dev/null; then
+            echo "Application failed to start" >&2
+            exit 1
+          fi
+        
 
       - name: Stop the application
         run: kill $(jobs -p)
