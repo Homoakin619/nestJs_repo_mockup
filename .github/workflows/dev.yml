@@ -50,8 +50,8 @@ jobs:
         run: npm run migration:run
 
       - name: Start application
-        run: npm run start:prod
-        timeout-minutes: 1
+        run: n|
+          timeout 60s npm run start:prod
 
       - name: Revert Migrations
         run: npm run migration:revert
