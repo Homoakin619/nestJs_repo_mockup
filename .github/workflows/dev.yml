@@ -41,10 +41,10 @@ jobs:
       - name: Run tests
         run: npm run test
 
-        name: Generate migrations
+      - name: Generate migrations
         run: npm run migration:generate
 
-        name: Run migrations
+      - name: Run migrations
         run: npm run migration:run
 
       - name: Start application
