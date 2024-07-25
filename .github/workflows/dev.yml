@@ -72,9 +72,9 @@ jobs:
           kill $APP_PID
           echo "Application terminated."
 
-      - name: Revert Migrations
-        run: npm run migration:revert
-        if: always()
+      # - name: Revert Migrations
+      #   run: npm run migration:revert
+      #   if: always()
 
       # - name: Run tests
       #   run: npm run test
