@@ -10,7 +10,7 @@ on:
 env:
   DB_USERNAME: ${{ secrets.DB_USERNAME }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  DB_DATABASE: 'secrets.DB_DATABASE'
+  DB_DATABASE: ${{ secrets.DB_DATABASE }}'
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_PORT: ${{ secrets.DB_PORT }}
   DB_ENTITIES: ${{ secrets.DB_ENTITIES }}
@@ -40,14 +40,14 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # - name: Run tests
-      #   run: npm run test
+      - name: Run tests
+        run: npm run test
 
-      # - name: Generate migrations
-      #   run: npm run migration:generate
+      - name: Generate migrations
+        run: npm run migration:generate
 
-      # - name: Run migrations
-      #   run: npm run migration:run
+      - name: Run migrations
+        run: npm run migration:run
 
       - name: Start application
         run: |
@@ -68,13 +68,12 @@ jobs:
               exit 1
           fi
 
-          # Optionally, terminate the application after the check
           kill $APP_PID
-          echo "Application terminated."
+          echo "Application terminated Successfully."
 
-      # - name: Revert Migrations
-      #   run: npm run migration:revert
-      #   if: always()
+      - name: Revert Migrations
+        run: npm run migration:revert
+        if: always()
 
       # - name: Run tests
       #   run: npm run test

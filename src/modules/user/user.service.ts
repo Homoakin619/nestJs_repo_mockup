@@ -29,7 +29,7 @@ export default class UserService {
     const newUser = new User();
     Object.assign(newUser, user);
     newUser.is_active = true;
-    await this.userRepository.save(newUser);
+    const d = await this.userRepository.save(newUser);
   }
 
   async updateUserRecord(userUpdateOptions: UpdateUserRecordOption) {
