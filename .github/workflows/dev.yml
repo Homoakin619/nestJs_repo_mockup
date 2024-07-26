@@ -1,4 +1,4 @@
-name: CI/CD-Dev
+name: CI/CD--Dev
 
 on:
   pull_request:
@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - dev
+
 env:
   DB_USERNAME: ${{ secrets.DB_USERNAME }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -74,37 +75,6 @@ jobs:
       - name: Revert Migrations
         run: npm run migration:revert
         if: always()
-
-      # - name: Run tests
-      #   run: npm run test
-
-      # - name: Generate migrations
-      #   run: npm run migration:generate
-
-      # - name: Run migrations
-      #   run: npm run migration:run
-
-      # - name: Start application
-      #   run: npm run start:prod
-
-      # - name: Check application logs and exit status
-      #   run: |
-      #     kill -0 $(cat app.pid) 2>/dev/null
-      #     if [ $? -eq 0 ]; then
-      #       echo "Application is running successfully."
-      #     else
-      #       echo "Application failed to start."
-      #       cat app.log
-      #       exit 1
-      #     fi
-
-      # - name: Stop the application
-      #   run: kill $(jobs -p)
-      #   if: always()
-
-      # - name: Start application
-      #   run: npm run migration:revert
-      #   if: always()
 
   # deploy-push:
   #   runs-on: ubuntu-latest
