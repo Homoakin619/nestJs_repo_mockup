@@ -5,12 +5,17 @@ import serverConfig from '../config/server.config';
 import * as Joi from 'joi';
 import { LoggerModule } from 'nestjs-pino';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './UserManagement/user.module';
-// import databaseConfig from '../config/database/typeorm';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import * as dotenv from 'dotenv'
-dotenv.config()
-
+import dataSource from './database/data-source';
+import { SeedingModule } from './database/seeding/seeding.module';
+import HealthController from './health.controller';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { EmailModule } from './modules/email/email.module';
+import authConfig from '../config/auth.config';
+import { OrganisationsModule } from './modules/organisations/organisations.module';
+import { AuthGuard } from './guards/auth.guard';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
 @Module({
   providers: [
@@ -26,6 +31,10 @@ dotenv.config()
           forbidNonWhitelisted: true,
         }),
     },
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    },
   ],
   imports: [
     ConfigModule.forRoot({
@@ -37,7 +46,7 @@ dotenv.config()
        */
       envFilePath: ['.env.development.local', `.env.${process.env.PROFILE}`],
       isGlobal: true,
-      load: [serverConfig],
+      load: [serverConfig, authConfig],
       /**
        * See ".env.local" file to list all environment variables needed by the app
        */
@@ -45,34 +54,45 @@ dotenv.config()
         NODE_ENV: Joi.string().valid('development', 'production', 'test', 'provision').required(),
         PROFILE: Joi.string().valid('local', 'development', 'production', 'ci', 'testing', 'staging').required(),
         PORT: Joi.number().required(),
-        DB_USER: Joi.string().required(),
-        DB_PASSWORD: Joi.string().required(),
-        DB_NAME: Joi.string().required(),
-        DB_HOST: Joi.string().required(),
-        DB_PORT: Joi.string().required(),
-        JWT_SECRET: Joi.string().required(),
-        JWT_EXPIRY: Joi.string().required(),
       }),
     }),
     LoggerModule.forRoot(),
-
-    TypeOrmModule.forRoot(
-      {
-        type: 'postgres',
-        host: process.env.DB_HOST,
-        port: +process.env.DB_PORT,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        entities: [__dirname + 'src/**/*.entity{.ts,.js}'],
-        migrations: [__dirname + 'src/**/migrations/*{.ts,.js}'],
-        synchronize: true,
-        retryAttempts: 5,
-        retryDelay: 3000,
-        namingStrategy: new SnakeNamingStrategy()
-      }
-    ),
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => ({
+        ...dataSource.options,
+      }),
+      dataSourceFactory: async () => dataSource,
+    }),
+    SeedingModule,
+    AuthModule,
     UserModule,
+    EmailModule,
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        transport: {
+          host: configService.get<string>('SMTP_HOST'),
+          port: configService.get<number>('SMTP_PORT'),
+          auth: {
+            user: configService.get<string>('SMTP_USER'),
+            pass: configService.get<string>('SMTP_PASSWORD'),
+          },
+        },
+        defaults: {
+          from: `"Team Remote Bingo" <${configService.get<string>('SMTP_USER')}>`,
+        },
+        template: {
+          dir: process.cwd() + '/src/modules/email/templates',
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    OrganisationsModule,
   ],
+  controllers: [HealthController],
 })
-export class AppModule { }
+export class AppModule {}
